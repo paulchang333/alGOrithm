@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getMergeSortAnimations } from "../sortingAlgorithms/sortingAlgorithms.js";
+import { getSelectionSortAnimations } from "../sortingAlgorithms/selectionSort";
 import "./SortingVisualizer.css";
 
 const SortingVisualizer = () => {
@@ -7,7 +8,7 @@ const SortingVisualizer = () => {
   const ANIMATION_SPEED_MS = 5;
 
   // Change this value for the number of bars (value) in the array.
-  const NUMBER_OF_ARRAY_BARS = 310;
+  const NUMBER_OF_ARRAY_BARS = 200;
 
   // This is the main color of the array bars.
   const PRIMARY_COLOR = "turquoise";
@@ -69,20 +70,83 @@ const SortingVisualizer = () => {
   };
 
   const quickSort = () => {
-    //   // We leave it as an exercise to the viewer of this code to implement this method.
+    // We leave it as an exercise to the viewer of this code to implement this method.
   };
 
-  const heapSort = () => {
-    //   // We leave it as an exercise to the viewer of this code to implement this method.
+  const selectionSort = (arr) => {
+    const animations = getSelectionSortAnimations(array);
+    for (let i = 0; i < animations.length; i++) {
+      const arrayBars = document.getElementsByClassName("array-bar");
+      if (animations[i][0] === "o") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = SECONDARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+
+      if (animations[i][0] === "f") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barTwoIdx = animations[i][2];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          const barTwoStyle = arrayBars[barTwoIdx].style;
+          barOneStyle.backgroundColor = PRIMARY_COLOR;
+          barTwoStyle.backgroundColor = SECONDARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+
+      if (animations[i][0] === "i") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = SECONDARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+      if (animations[i][0] === "ii") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = PRIMARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+
+      if (animations[i][0] === "s") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneVal = animations[i][3];
+          const barTwoIdx = animations[i][2];
+          const barTwoVal = animations[i][4];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          const barTwoStyle = arrayBars[barTwoIdx].style;
+          barOneStyle.height = `${barOneVal}px`;
+          barTwoStyle.height = `${barTwoVal}px`;
+          barTwoStyle.backgroundColor = PRIMARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+    }
   };
 
-  const bubbleSort = () => {
-    //   // We leave it as an exercise to the viewer of this code to implement this method.
+  const bubbleSort = (arr) => {
+    let swapped;
+    let n = arr.length;
+    let sortedArray = arr;
+    do {
+      swapped = false;
+      for (let i = 0; i < n - 1; i++) {
+        if (sortedArray[i] > sortedArray[i + 1]) {
+          let temp = sortedArray[i];
+          sortedArray[i] = sortedArray[i + 1];
+          sortedArray[i + 1] = temp;
+          swapped = true;
+        }
+      }
+      n--;
+    } while (swapped);
+
+    return sortedArray;
   };
 
-  // NOTE: This method will only work if your sorting algorithms actually return
-  // the sorted arrays; if they return the animations (as they currently do), then
-  // this method will be broken.
   const testSortingAlgorithms = () => {
     for (let i = 0; i < 100; i++) {
       const array = [];
@@ -91,13 +155,23 @@ const SortingVisualizer = () => {
         array.push(randomIntFromInterval(-1000, 1000));
       }
       const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-      const mergeSortedArray = getMergeSortAnimations(array.slice());
-      console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
+      const sortedArray = selectionSort(array.slice());
+      console.log(arraysAreEqual(javaScriptSortedArray, sortedArray));
     }
   };
 
   return (
     <div className="array-container">
+      <div class="slidecontainer">
+        <input
+          type="range"
+          min="1"
+          max="100"
+          value="50"
+          class="slider"
+          id="myRange"
+        />
+      </div>
       {array.map((value, idx) => (
         <div
           className="array-bar"
@@ -108,10 +182,11 @@ const SortingVisualizer = () => {
           }}
         ></div>
       ))}
+
       <button onClick={() => resetArray()}>Generate New Array</button>
       <button onClick={() => mergeSort()}>Merge Sort</button>
       <button onClick={() => quickSort()}>Quick Sort</button>
-      <button onClick={() => heapSort()}>Heap Sort</button>
+      <button onClick={() => selectionSort()}>selection Sort</button>
       <button onClick={() => bubbleSort()}>Bubble Sort</button>
       <button onClick={() => testSortingAlgorithms()}>
         Test Sorting Algorithms (BROKEN)

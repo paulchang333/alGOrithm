@@ -1,7 +1,6 @@
-.array-container {
-  position: absolute;
-  left: 100px;
-  /* top: 100px; */
+.grid-container {
+  display: grid;
+  grid-template-columns: auto;
 }
 
 .array-bar {
@@ -11,12 +10,12 @@
 }
 
 .slidecontainer {
-  width: 100%; /* Width of the outside container */
+  padding-top: 20px;
 }
 
 .slider {
   -webkit-appearance: none;
-  width: 100%;
+  width: 70%;
   height: 15px;
   border-radius: 5px;
   background: #d3d3d3;
@@ -42,4 +41,15 @@
   border-radius: 50%;
   background: #4caf50;
   cursor: pointer;
+}
+
+#myProgress {
+  width: 100%;
+  background-color: grey;
+}
+
+.myBar {
+  width: 1%;
+  height: 30px;
+  background-color: green;
 }

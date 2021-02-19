@@ -4,11 +4,7 @@ import { getSelectionSortAnimations } from "../sortingAlgorithms/selectionSort";
 import "./SortingVisualizer.css";
 
 const SortingVisualizer = () => {
-  // Change this value for the speed of the animations.
   const ANIMATION_SPEED_MS = 5;
-
-  // Change this value for the number of bars (value) in the array.
-  const NUMBER_OF_ARRAY_BARS = 200;
 
   // This is the main color of the array bars.
   const PRIMARY_COLOR = "turquoise";
@@ -16,22 +12,35 @@ const SortingVisualizer = () => {
   // This is the color of array bars that are being compared throughout the animations.
   const SECONDARY_COLOR = "red";
 
-  function randomIntFromInterval(min, max) {
-    // min and max included
+  const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
-  }
+  };
 
-  function arraysAreEqual(arrayOne, arrayTwo) {
-    if (arrayOne.length !== arrayTwo.length) return false;
-    for (let i = 0; i < arrayOne.length; i++) {
-      if (arrayOne[i] !== arrayTwo[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
+  // function arraysAreEqual(arrayOne, arrayTwo) {
+  //   if (arrayOne.length !== arrayTwo.length) return false;
+  //   for (let i = 0; i < arrayOne.length; i++) {
+  //     if (arrayOne[i] !== arrayTwo[i]) {
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
+
+  // const testSortingAlgorithms = () => {
+  //   for (let i = 0; i < 100; i++) {
+  //     const array = [];
+  //     const length = randomIntFromInterval(1, 1000);
+  //     for (let i = 0; i < length; i++) {
+  //       array.push(randomIntFromInterval(-1000, 1000));
+  //     }
+  //     const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
+  //     const sortedArray = selectionSort(array.slice());
+  //     console.log(arraysAreEqual(javaScriptSortedArray, sortedArray));
+  //   }
+  // };
 
   const [array, setArray] = useState([]);
+  const [algorithms, setAlgorithms] = useState([]);
 
   useEffect(() => {
     resetArray();
@@ -39,17 +48,52 @@ const SortingVisualizer = () => {
 
   const resetArray = () => {
     const array = [];
+    let slider = document.getElementById("myRange");
+    let NUMBER_OF_ARRAY_BARS = slider.value;
     for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-      array.push(randomIntFromInterval(5, 730));
+      array.push(randomIntFromInterval(5, 300));
     }
     setArray(array);
   };
 
-  const mergeSort = () => {
-    const animations = getMergeSortAnimations(array);
+  const setarr = (str, num) => {
+    let arr = algorithms;
+    arr[num] = str;
+    setAlgorithms(arr);
+  };
+
+  const algorithmsRace = () => {
+    if (algorithms.includes("merge")) {
+      algorithms.indexOf("merge") === 0 ? mergeSort(1) : mergeSort(2);
+    }
+    if (algorithms.includes("selection")) {
+      algorithms.indexOf("selection") === 0
+        ? selectionSort(1)
+        : selectionSort(2);
+    }
+    if (algorithms.includes("bubble")) {
+      algorithms.indexOf("bubble") === 0 ? bubbleSort(1) : bubbleSort(2);
+    }
+  };
+
+  const mergeSort = (arr_num) => {
+    let arr = array.slice();
+    const animations = getMergeSortAnimations(arr);
+    const animationLength = animations.length;
+    const percentLength = animationLength / 100;
+    const elem = document.getElementById(`myBar${arr_num}`);
+    let wid = 0;
     for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName("array-bar");
+      const arrayBars = document.getElementsByClassName(`array${arr_num}`);
       const isColorChange = i % 3 !== 2;
+
+      if (i % percentLength <= 1) {
+        setTimeout(() => {
+          wid++;
+          elem.style.width = wid + "%";
+        }, i * ANIMATION_SPEED_MS);
+      }
+
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
@@ -73,10 +117,24 @@ const SortingVisualizer = () => {
     // We leave it as an exercise to the viewer of this code to implement this method.
   };
 
-  const selectionSort = (arr) => {
-    const animations = getSelectionSortAnimations(array);
-    for (let i = 0; i < animations.length; i++) {
-      const arrayBars = document.getElementsByClassName("array-bar");
+  const selectionSort = (arr_num) => {
+    let arr = array.slice();
+    const animations = getSelectionSortAnimations(arr);
+    const animationLength = animations.length;
+    const percentLength = animationLength / 100;
+    const elem = document.getElementById(`myBar${arr_num}`);
+    let wid = 0;
+    console.log(animations);
+    for (let i = 0; i < animationLength; i++) {
+      const arrayBars = document.getElementsByClassName(`array${arr_num}`);
+
+      if (i % percentLength <= 1) {
+        setTimeout(() => {
+          wid++;
+          elem.style.width = wid + "%";
+        }, i * ANIMATION_SPEED_MS);
+      }
+
       if (animations[i][0] === "o") {
         setTimeout(() => {
           const barOneIdx = animations[i][1];
@@ -103,6 +161,7 @@ const SortingVisualizer = () => {
           barOneStyle.backgroundColor = SECONDARY_COLOR;
         }, i * ANIMATION_SPEED_MS);
       }
+
       if (animations[i][0] === "ii") {
         setTimeout(() => {
           const barOneIdx = animations[i][1];
@@ -122,6 +181,13 @@ const SortingVisualizer = () => {
           barOneStyle.height = `${barOneVal}px`;
           barTwoStyle.height = `${barTwoVal}px`;
           barTwoStyle.backgroundColor = PRIMARY_COLOR;
+        }, i * ANIMATION_SPEED_MS);
+      }
+      if (animations[i][0] === "r") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = PRIMARY_COLOR;
         }, i * ANIMATION_SPEED_MS);
       }
     }
@@ -147,50 +213,79 @@ const SortingVisualizer = () => {
     return sortedArray;
   };
 
-  const testSortingAlgorithms = () => {
-    for (let i = 0; i < 100; i++) {
-      const array = [];
-      const length = randomIntFromInterval(1, 1000);
-      for (let i = 0; i < length; i++) {
-        array.push(randomIntFromInterval(-1000, 1000));
-      }
-      const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-      const sortedArray = selectionSort(array.slice());
-      console.log(arraysAreEqual(javaScriptSortedArray, sortedArray));
-    }
-  };
-
   return (
-    <div className="array-container">
-      <div class="slidecontainer">
+    <div className="grid-container">
+      <div className="slidecontainer">
         <input
+          class="numberSlider"
           type="range"
           min="1"
           max="100"
-          value="50"
-          class="slider"
+          className="slider"
           id="myRange"
         />
       </div>
-      {array.map((value, idx) => (
-        <div
-          className="array-bar"
-          key={idx}
-          style={{
-            backgroundColor: PRIMARY_COLOR,
-            height: `${value}px`,
-          }}
-        ></div>
-      ))}
+      <div className="array">
+        {array.map((value, idx) => (
+          <div
+            className="array-bar array1"
+            key={idx}
+            style={{
+              backgroundColor: PRIMARY_COLOR,
+              height: `${value}px`,
+            }}
+          ></div>
+        ))}
+      </div>
+      <div id="myProgress">
+        <div className="myBar" id="myBar1"></div>
+      </div>
+      <div className="array">
+        {array.map((value, idx) => (
+          <div
+            className="array-bar array2"
+            key={idx}
+            style={{
+              backgroundColor: PRIMARY_COLOR,
+              height: `${value}px`,
+            }}
+          ></div>
+        ))}
+      </div>
+      <div id="myProgress">
+        <div className="myBar" id="myBar2"></div>
+      </div>
+      <div>
+        <button onClick={() => resetArray()}>Generate New Array</button>
+      </div>
 
-      <button onClick={() => resetArray()}>Generate New Array</button>
-      <button onClick={() => mergeSort()}>Merge Sort</button>
-      <button onClick={() => quickSort()}>Quick Sort</button>
-      <button onClick={() => selectionSort()}>selection Sort</button>
-      <button onClick={() => bubbleSort()}>Bubble Sort</button>
-      <button onClick={() => testSortingAlgorithms()}>
-        Test Sorting Algorithms (BROKEN)
-      </button>
+      <div className="buttons">
+        <h1>ALGORITHM 1</h1>
+        <button onClick={() => setarr("merge", 0)}>Merge Sort</button>
+        <button onClick={() => setarr("selection", 0)}>selection Sort</button>
+        {/* <button onClick={() => (setAlgorithms[0] = "bubble")}>
+          Bubble Sort
+        </button> */}
+
+        {/* <button onClick={() => testSortingAlgorithms()}>
+          Test Sorting Algorithms (BROKEN)
+        </button> */}
+      </div>
+      <div className="buttons">
+        <h1>ALGORITHM 2</h1>
+        <button onClick={() => setarr("merge", 1)}>Merge Sort</button>
+        <button onClick={() => setarr("selection", 1)}>selection Sort</button>
+        {/* <button onClick={() => (setAlgorithms[1] = "bubble")}>
+          Bubble Sort
+        </button> */}
+
+        {/* <button onClick={() => testSortingAlgorithms()}>
+          Test Sorting Algorithms (BROKEN)
+        </button> */}
+      </div>
+      <div className="buttons">
+        <button onClick={() => algorithmsRace()}>RACE!!!!!!</button>
+      </div>
     </div>
   );
 };

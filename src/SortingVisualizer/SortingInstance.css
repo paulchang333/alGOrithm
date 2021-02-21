@@ -1,9 +1,10 @@
-.grid-container {
-  display: grid;
-  grid-template-columns: auto;
+.array-bar-1 {
+  width: 2px;
+  display: inline-block;
+  margin: 0 1px;
 }
 
-.array-bar {
+.array-bar-2 {
   width: 2px;
   display: inline-block;
   margin: 0 1px;
@@ -48,8 +49,21 @@
   background-color: grey;
 }
 
-.myBar {
-  width: 1%;
+#myBar1 {
+  width: 0%;
   height: 30px;
   background-color: green;
+}
+#myBar2 {
+  width: 0%;
+  height: 30px;
+  background-color: green;
+}
+
+.winner-1 {
+  display: none;
+}
+
+.winner-2 {
+  display: none;
 }

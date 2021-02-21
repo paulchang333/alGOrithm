@@ -4,14 +4,25 @@ import "./sortingRace.css";
 import SortingInstance from "../SortingVisualizer/SortingInstance";
 
 const SortingRace = () => {
-  const NUMBER_OF_ARRAY_BARS = 310;
+  const NUMBER_OF_ARRAY_BARS = 200;
   const [array, setArray] = useState([]);
   const [algorithms, setAlgorithms] = useState([]);
   const [startRace, setStartRace] = useState(false);
+  const [raceWinner, setRaceWinner] = useState([]);
 
   useEffect(() => {
     resetArray();
   }, []);
+
+  useEffect(() => {
+    console.log(raceWinner);
+    if (raceWinner.length > 0) {
+      const winner = document.getElementsByClassName(`winner-${raceWinner}`);
+      if (winner !== null) {
+        winner[0].style.display = "block";
+      }
+    }
+  }, [raceWinner]);
 
   const randomIntFromInterval = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1) + min);
@@ -22,7 +33,7 @@ const SortingRace = () => {
     let slider = document.getElementById("myRange");
     let NUMBER_OF_ARRAY_BARS = slider.value;
     for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-      array.push(randomIntFromInterval(5, 300));
+      array.push(randomIntFromInterval(5, 250));
     }
     setArray(array);
   };
@@ -38,21 +49,11 @@ const SortingRace = () => {
     let newAlgo = str.replace(str, `${algo}`);
     document.getElementById(`Algo${num}`).innerHTML = newAlgo;
     setarr(algo, num);
-    console.log(startRace);
   };
 
-  const algorithmsRace = () => {
-    // if (algorithms.includes("MERGE")) {
-    //   algorithms.indexOf("MERGE") === 0 ? mergeSort(1) : mergeSort(2);
-    // }
-    // if (algorithms.includes("SELECTION")) {
-    //   algorithms.indexOf("SELECTION") === 0
-    //     ? selectionSort(1)
-    //     : selectionSort(2);
-    // }
-    // if (algorithms.includes("BUBBLE")) {
-    //   algorithms.indexOf("BUBBLE") === 0 ? bubbleSort(1) : bubbleSort(2);
-    // }
+  const buttonFunction2 = () => {
+    setStartRace(true);
+    setRaceWinner([]);
   };
 
   return (
@@ -62,7 +63,7 @@ const SortingRace = () => {
           class="numberSlider"
           type="range"
           min="1"
-          max="300"
+          max="500"
           className="slider"
           id="myRange"
         />
@@ -78,10 +79,14 @@ const SortingRace = () => {
         </button>
         <button onClick={() => buttonFunction("BUBBLE", 0)}>Bubble Sort</button>
       </div>
+      <h1 className={"winner-1"}>WINNER</h1>
       <SortingInstance
         algorithm={algorithms[0]}
         array={array}
         startRace={startRace}
+        setStartRace={setStartRace}
+        raceWinner={raceWinner}
+        setRaceWinner={setRaceWinner}
         id={1}
       />
 
@@ -93,18 +98,19 @@ const SortingRace = () => {
         </button>
         <button onClick={() => buttonFunction("BUBBLE", 1)}>Bubble Sort</button>
       </div>
+      <h1 className={"winner-2"}>WINNER</h1>
       <SortingInstance
         algorithm={algorithms[1]}
         array={array}
         startRace={startRace}
+        setStartRace={setStartRace}
+        raceWinner={raceWinner}
+        setRaceWinner={setRaceWinner}
         id={2}
       />
 
       <div className="buttons">
-        <button onClick={() => setStartRace(true)}>RACE!!!!!!</button>
-      </div>
-      <div className="buttons">
-        <button onClick={() => setStartRace(false)}>TEMPERAEIR!!!!!</button>
+        <button onClick={() => buttonFunction2()}>RACE!!!!!!</button>
       </div>
     </div>
   );

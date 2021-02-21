@@ -62,8 +62,10 @@
 
 .winner-1 {
   display: none;
+  color: red;
 }
 
 .winner-2 {
   display: none;
+  color: red;
 }

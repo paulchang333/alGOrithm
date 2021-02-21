@@ -7,18 +7,33 @@ import "./SortingInstance.css";
 
 const SortingVisualizer = (props) => {
   const ANIMATION_SPEED_MS = 1;
-
-  // This is the main color of the array bars.
   const PRIMARY_COLOR = "turquoise";
-
-  // This is the color of array bars that are being compared throughout the animations.
   const SECONDARY_COLOR = "red";
 
-  const { algorithm, array, startRace, id } = props;
-  const [first, setFirst] = useState(false);
+  const {
+    algorithm,
+    array,
+    startRace,
+    setStartRace,
+    raceWinner,
+    setRaceWinner,
+    id,
+  } = props;
 
   useEffect(() => {
+    if (raceWinner.length > 0) {
+      const winner = document.getElementsByClassName(`winner-${raceWinner}`);
+      if (winner !== null) {
+        winner[0].style.display = "block";
+      }
+    }
+  }, [raceWinner]);
+
+  useEffect(() => {
+    console.log(raceWinner);
     if (startRace) {
+      const winner = document.getElementsByClassName(`winner-${id}`);
+      winner[0].style.display = "none";
       if (algorithm === "MERGE") {
         mergeSort();
       } else if (algorithm === "BUBBLE") {
@@ -28,6 +43,12 @@ const SortingVisualizer = (props) => {
       }
     }
   }, [startRace]);
+
+  const setWinner = () => {
+    let arr = raceWinner;
+    arr.push(id);
+    setRaceWinner(arr);
+  };
 
   const mergeSort = () => {
     let arr = array.slice();
@@ -44,8 +65,9 @@ const SortingVisualizer = (props) => {
         setTimeout(() => {
           wid++;
           elem.style.width = wid + "%";
-          if (wid === 100 && first === false) {
-            setFirst(true);
+          if (wid === 100 && raceWinner.length === 0) {
+            setStartRace(false);
+            setWinner();
             const winner = document.getElementsByClassName(`winner-${id}`);
             winner[0].style.display = "block";
           }
@@ -85,8 +107,9 @@ const SortingVisualizer = (props) => {
         setTimeout(() => {
           wid++;
           elem.style.width = wid + "%";
-          if (wid === 100 && first === false) {
-            setFirst(true);
+          if (wid === 100 && raceWinner.length === 0) {
+            setStartRace(false);
+            setWinner();
             const winner = document.getElementsByClassName(`winner-${id}`);
             winner[0].style.display = "block";
           }
@@ -155,7 +178,6 @@ const SortingVisualizer = (props) => {
     let arr = array.slice();
     const animations = getBubbleSortAnimations(arr);
     const animationLength = animations.length;
-
     const percentLength = animationLength / 100;
     const elem = document.getElementById(`myBar${id}`);
     let wid = 0;
@@ -165,8 +187,9 @@ const SortingVisualizer = (props) => {
         setTimeout(() => {
           wid++;
           elem.style.width = wid + "%";
-          if (wid === 100 && first === false) {
-            setFirst(true);
+          if (wid === 100 && raceWinner.length === 0) {
+            setStartRace(false);
+            setWinner();
             const winner = document.getElementsByClassName(`winner-${id}`);
             winner[0].style.display = "block";
           }
@@ -228,7 +251,7 @@ const SortingVisualizer = (props) => {
 
   return (
     <div>
-      <h1 className={"winner-" + id}>OKSDOFKSFDSFDS</h1>
+      <h1 className={"winner-" + id}>WINNER</h1>
       <div className="array">
         {array.map((value, idx) => (
           <div

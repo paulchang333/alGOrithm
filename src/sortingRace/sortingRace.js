@@ -16,7 +16,7 @@ const SortingRace = () => {
   const [numberOfArrayBars, setNumberOfArrayBars] = useState(
     DEFAULT_ARRAY_BARS
   );
-  const [speed, setSpeed] = useState(5);
+  const [speed, setSpeed] = useState(500);
 
   useEffect(() => {
     resetArray();
@@ -87,7 +87,7 @@ const SortingRace = () => {
         </div>
         <div className="slidecontainer">
           <label htmlFor="size-slider">
-            <b>Array Size:</b> {numberOfArrayBars}ms
+            <b>Array Size:</b> {numberOfArrayBars}
           </label>
           <input
             class="numberSlider"
@@ -103,7 +103,7 @@ const SortingRace = () => {
         </div>
         <div className="slidecontainer">
           <label htmlFor="size-slider">
-            <b>Sorting Speed:</b> {speed}
+            <b>Sorting Speed:</b> {speed}ms
           </label>
           <input
             class="numberSlider"
@@ -160,6 +160,12 @@ const SortingRace = () => {
           >
             Bubble Sort
           </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("INSERTION", 0)}
+          >
+            Insertion Sort
+          </button>
         </div>
         <h1 className={"winner-1"}>WINNER</h1>
         <SortingInstance
@@ -195,6 +201,12 @@ const SortingRace = () => {
             onClick={() => buttonFunction("BUBBLE", 1)}
           >
             Bubble Sort
+          </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("INSERTION", 1)}
+          >
+            Insertion Sort
           </button>
         </div>
         <h1 className={"winner-2"}>WINNER</h1>

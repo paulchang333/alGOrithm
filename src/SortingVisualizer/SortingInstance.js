@@ -43,6 +43,8 @@ const SortingVisualizer = (props) => {
         bubbleSort();
       } else if (algorithm === "SELECTION") {
         selectionSort();
+      } else if (algorithm === "INSERTION") {
+        insertionSort();
       }
     }
   }, [startRace]);
@@ -182,7 +184,44 @@ const SortingVisualizer = (props) => {
       }
     }
   };
-  // const insertionSort = () => {};
+  const insertionSort = () => {
+    let arr = array.slice();
+    const animations = getInsertionSortAnimations(arr);
+    const animationLength = animations.length;
+    const percentLength = animationLength / 100;
+    const elem = document.getElementById(`myBar${id}`);
+    let wid = 0;
+    for (let i = 0; i < animations.length; i++) {
+      const arrayBars = document.getElementsByClassName(`array-bar-${id}`);
+      if (i % percentLength <= 1) {
+        wid++;
+        progressbar(wid, elem, i, "bubble");
+      }
+
+      if (animations[i][0] === "d") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = SECONDARY_COLOR;
+        }, i * speed);
+      }
+      if (animations[i][0] === "dd") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.backgroundColor = PRIMARY_COLOR;
+        }, i * speed);
+      }
+      if (animations[i][0] === "s") {
+        setTimeout(() => {
+          const barOneIdx = animations[i][1];
+          const barOneVal = animations[i][2];
+          const barOneStyle = arrayBars[barOneIdx].style;
+          barOneStyle.height = `${barOneVal}px`;
+        }, i * speed);
+      }
+    }
+  };
 
   const bubbleSort = () => {
     let arr = array.slice();

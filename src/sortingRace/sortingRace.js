@@ -3,19 +3,26 @@ import React, { useState, useEffect } from "react";
 import "./sortingRace.css";
 import SortingInstance from "../SortingVisualizer/SortingInstance";
 
+const DEFAULT_ARRAY_BARS = 25;
+
 const SortingRace = () => {
-  const NUMBER_OF_ARRAY_BARS = 200;
   const [array, setArray] = useState([]);
   const [algorithms, setAlgorithms] = useState([]);
   const [startRace, setStartRace] = useState(false);
   const [raceWinner, setRaceWinner] = useState([]);
+  const [raceOnGoing, setRaceOnGoing] = useState(false);
+  const [selected, setSelected] = useState(true);
+  const [raceDone, setRaceDone] = useState([]);
+  const [numberOfArrayBars, setNumberOfArrayBars] = useState(
+    DEFAULT_ARRAY_BARS
+  );
+  const [speed, setSpeed] = useState(5);
 
   useEffect(() => {
     resetArray();
   }, []);
 
   useEffect(() => {
-    console.log(raceWinner);
     if (raceWinner.length > 0) {
       const winner = document.getElementsByClassName(`winner-${raceWinner}`);
       if (winner !== null) {
@@ -28,12 +35,19 @@ const SortingRace = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
+  const handleRangeChange = (e) => {
+    resetArray(e.target.value);
+    setNumberOfArrayBars(e.target.value);
+  };
+
+  const handleSpeedChange = (e) => {
+    setSpeed(e.target.value);
+  };
+
   const resetArray = () => {
     const array = [];
-    let slider = document.getElementById("myRange");
-    let NUMBER_OF_ARRAY_BARS = slider.value;
-    for (let i = 0; i < NUMBER_OF_ARRAY_BARS; i++) {
-      array.push(randomIntFromInterval(5, 250));
+    for (let i = 0; i < numberOfArrayBars; i++) {
+      array.push(randomIntFromInterval(5, 200));
     }
     setArray(array);
   };
@@ -42,6 +56,9 @@ const SortingRace = () => {
     let arr = algorithms;
     arr[num] = str;
     setAlgorithms(arr);
+    if (algorithms.length === 2) {
+      setSelected(false);
+    }
   };
 
   const buttonFunction = (algo, num) => {
@@ -52,65 +69,148 @@ const SortingRace = () => {
   };
 
   const buttonFunction2 = () => {
-    setStartRace(true);
-    setRaceWinner([]);
+    if (algorithms.length > 0) {
+      setStartRace(true);
+      setRaceWinner([]);
+      setRaceOnGoing(true);
+      setRaceDone([]);
+    }
   };
 
   return (
     <div className="grid-container">
-      <div className="slidecontainer">
-        <input
-          class="numberSlider"
-          type="range"
-          min="1"
-          max="500"
-          className="slider"
-          id="myRange"
-        />
+      <div className="grid-item1">
+        <div className="welcome">
+          <h1>Welcome to alGOrithm</h1>
+          <p>Race different sorting algorithms to see which one is faster!</p>
+          <p>Please select two algorithms to start the race</p>
+        </div>
+        <div className="slidecontainer">
+          <label htmlFor="size-slider">
+            <b>Array Size:</b> {numberOfArrayBars}ms
+          </label>
+          <input
+            class="numberSlider"
+            type="range"
+            min="1"
+            max="50"
+            className="slider"
+            id="myRange"
+            value={numberOfArrayBars}
+            onChange={(e) => handleRangeChange(e)}
+            disabled={raceOnGoing}
+          />
+        </div>
+        <div className="slidecontainer">
+          <label htmlFor="size-slider">
+            <b>Sorting Speed:</b> {speed}
+          </label>
+          <input
+            class="numberSlider"
+            type="range"
+            min="1"
+            max="100"
+            className="slider"
+            id="myRange"
+            value={speed}
+            onChange={(e) => handleSpeedChange(e)}
+            disabled={raceOnGoing}
+          />
+        </div>
+
+        <div className="buttons">
+          <div>
+            <button
+              disabled={raceOnGoing}
+              onClick={() => resetArray(numberOfArrayBars)}
+            >
+              Generate New Array
+            </button>
+          </div>
+          <button
+            disabled={raceOnGoing || selected}
+            onClick={() => buttonFunction2()}
+          >
+            RACE!!!!!!
+          </button>
+          <button onClick={() => window.location.reload(false)}>
+            <b>RESET</b>
+          </button>
+        </div>
       </div>
+
       <div>
-        <button onClick={() => resetArray()}>Generate New Array</button>
-      </div>
-      <div className="buttons">
         <h1 id="Algo0">ALGORITHM 1</h1>
-        <button onClick={() => buttonFunction("MERGE", 0)}>Merge Sort</button>
-        <button onClick={() => buttonFunction("SELECTION", 0)}>
-          Selection Sort
-        </button>
-        <button onClick={() => buttonFunction("BUBBLE", 0)}>Bubble Sort</button>
-      </div>
-      <h1 className={"winner-1"}>WINNER</h1>
-      <SortingInstance
-        algorithm={algorithms[0]}
-        array={array}
-        startRace={startRace}
-        setStartRace={setStartRace}
-        raceWinner={raceWinner}
-        setRaceWinner={setRaceWinner}
-        id={1}
-      />
+        <div className="buttons" disabled={raceOnGoing}>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("MERGE", 0)}
+          >
+            Merge Sort
+          </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("SELECTION", 0)}
+          >
+            Selection Sort
+          </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("BUBBLE", 0)}
+          >
+            Bubble Sort
+          </button>
+        </div>
+        <h1 className={"winner-1"}>WINNER</h1>
+        <SortingInstance
+          algorithm={algorithms[0]}
+          array={array}
+          startRace={startRace}
+          setStartRace={setStartRace}
+          raceWinner={raceWinner}
+          setRaceWinner={setRaceWinner}
+          id={1}
+          setRaceOnGoing={setRaceOnGoing}
+          raceDone={raceDone}
+          setRaceDone={setRaceDone}
+          speed={speed}
+        />
 
-      <div className="buttons">
         <h1 id="Algo1">ALGORITHM 2</h1>
-        <button onClick={() => buttonFunction("MERGE", 1)}>Merge Sort</button>
-        <button onClick={() => buttonFunction("SELECTION", 1)}>
-          Selection Sort
-        </button>
-        <button onClick={() => buttonFunction("BUBBLE", 1)}>Bubble Sort</button>
-      </div>
-      <h1 className={"winner-2"}>WINNER</h1>
-      <SortingInstance
-        algorithm={algorithms[1]}
-        array={array}
-        startRace={startRace}
-        setStartRace={setStartRace}
-        raceWinner={raceWinner}
-        setRaceWinner={setRaceWinner}
-        id={2}
-      />
-
-      <div className="buttons">
-        <button onClick={() => buttonFunction2()}>RACE!!!!!!</button>
+        <div className="buttons" disabled={raceOnGoing}>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("MERGE", 1)}
+          >
+            Merge Sort
+          </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("SELECTION", 1)}
+          >
+            Selection Sort
+          </button>
+          <button
+            disabled={raceOnGoing}
+            onClick={() => buttonFunction("BUBBLE", 1)}
+          >
+            Bubble Sort
+          </button>
+        </div>
+        <h1 className={"winner-2"}>WINNER</h1>
+        <SortingInstance
+          algorithm={algorithms[1]}
+          array={array}
+          startRace={startRace}
+          setStartRace={setStartRace}
+          raceWinner={raceWinner}
+          setRaceWinner={setRaceWinner}
+          id={2}
+          setRaceOnGoing={setRaceOnGoing}
+          raceDone={raceDone}
+          setRaceDone={setRaceDone}
+          speed={speed}
+        />
       </div>
     </div>
   );

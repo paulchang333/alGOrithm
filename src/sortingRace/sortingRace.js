@@ -16,7 +16,7 @@ const SortingRace = () => {
   const [numberOfArrayBars, setNumberOfArrayBars] = useState(
     DEFAULT_ARRAY_BARS
   );
-  const [speed, setSpeed] = useState(500);
+  const [speed, setSpeed] = useState(5);
 
   useEffect(() => {
     resetArray();

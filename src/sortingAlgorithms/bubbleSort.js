@@ -19,7 +19,8 @@ const doBubble = (arr, animations) => {
         sortedArray[i + 1] = temp;
         swapped = true;
         animations.push(["s", i, i + 1]);
-        animations.push(["ss", i, i + 1, sortedArray[i], sortedArray[i + 1]]);
+        animations.push(["ss", i, i + 1, temp]);
+        animations.push(["sss", i, i + 1, sortedArray[i], sortedArray[i + 1]]);
       } else {
         animations.push(["o", i, i + 1]);
         animations.push(["oo", i]);

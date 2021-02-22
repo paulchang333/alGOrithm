@@ -92,7 +92,7 @@ const SortingRace = () => {
           <input
             class="numberSlider"
             type="range"
-            min="1"
+            min="10"
             max="50"
             className="slider"
             id="myRange"

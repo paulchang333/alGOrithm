@@ -1,17 +1,12 @@
-# Flicker
+# alGOrithm
 
-A Tinder-esque web app designed to make the process of choosing a movie or show to watch on Netflix with a group more efficient. Swipe right on the card to accept, left to reject, and once everyone is finished making their decisions, the group's strongest recommendations will be displayed for everyone to see.
+A visual sorting algorithm web application that will pit 2 sorting algorithms against each other in a race to sort a random array. This is done to display the time complexity of different sorting algorithms compared to another. Users may control the size of the array as well as the speed of both algorithms.
 
-Data from Netflix was collected using the unofficial Netflix API, uNoGS.
 
-**URL:** http://flickerapp.herokuapp.com/
+**URL:** https://al-go-rithm.herokuapp.com/
 
 ## Stack
 
-**Front-end**: React
+**Front-end**: React, HTML, CSS, JavaScript
 
-**Back-end (server)**: Node.js, Express
 
-**Database**: MongoDB
-
-Site was deployed using Heroku.
